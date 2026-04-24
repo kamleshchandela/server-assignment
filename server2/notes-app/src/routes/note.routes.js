@@ -10,6 +10,7 @@ router.get('/status/:isPinned', noteController.getNotesByPinnedStatus);
 router.get('/filter', noteController.filterNotes);
 router.get('/filter/pinned', noteController.filterPinnedNotes);
 router.get('/filter/category', noteController.filterByCategoryQuery);
+router.get('/filter/date-range', noteController.filterByDateRange);
 router.get('/:id/summary', noteController.getNoteSummary);
 router.get('/:id', noteController.getNoteById);
 router.put('/:id', noteController.replaceNote);

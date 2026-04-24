@@ -497,3 +497,40 @@ exports.filterByCategoryQuery = async (req, res) => {
     });
   }
 };
+
+// @desc    Filter notes by date range
+// @route   GET /api/notes/filter/date-range
+// @access  Public
+exports.filterByDateRange = async (req, res) => {
+  try {
+    const { from, to } = req.query;
+
+    if (!from || !to) {
+      return res.status(400).json({
+        success: false,
+        message: "Both 'from' and 'to' query params are required",
+        data: null
+      });
+    }
+
+    const notes = await Note.find({
+      createdAt: {
+        $gte: new Date(from),
+        $lte: new Date(to)
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Notes fetched between ${from} and ${to}`,
+      count: notes.length,
+      data: notes
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      data: null
+    });
+  }
+};
