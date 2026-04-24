@@ -12,6 +12,7 @@ router.get('/filter/pinned', noteController.filterPinnedNotes);
 router.get('/filter/category', noteController.filterByCategoryQuery);
 router.get('/filter/date-range', noteController.filterByDateRange);
 router.get('/paginate', noteController.paginateNotes);
+router.get('/paginate/category/:category', noteController.paginateNotesByCategory);
 router.get('/:id/summary', noteController.getNoteSummary);
 router.get('/:id', noteController.getNoteById);
 router.put('/:id', noteController.replaceNote);
