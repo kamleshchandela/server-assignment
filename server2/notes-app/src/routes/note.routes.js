@@ -6,6 +6,7 @@ router.post('/', noteController.createNote);
 router.post('/bulk', noteController.createNotesBulk);
 router.get('/', noteController.getNotes);
 router.get('/category/:category', noteController.getNotesByCategory);
+router.get('/status/:isPinned', noteController.getNotesByPinnedStatus);
 router.get('/:id', noteController.getNoteById);
 router.put('/:id', noteController.replaceNote);
 router.patch('/:id', noteController.updateNote);
