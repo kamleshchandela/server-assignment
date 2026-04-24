@@ -436,3 +436,32 @@ exports.filterNotes = async (req, res) => {
     });
   }
 };
+
+// @desc    Filter pinned notes, optionally by category
+// @route   GET /api/notes/filter/pinned
+// @access  Public
+exports.filterPinnedNotes = async (req, res) => {
+  try {
+    const { category } = req.query;
+    let query = { isPinned: true };
+
+    if (category) {
+      query.category = category;
+    }
+
+    const notes = await Note.find(query);
+
+    res.status(200).json({
+      success: true,
+      message: 'Pinned notes fetched successfully',
+      count: notes.length,
+      data: notes
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      data: null
+    });
+  }
+};
