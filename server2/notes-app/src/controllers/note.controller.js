@@ -607,3 +607,37 @@ exports.paginateNotesByCategory = async (req, res) => {
     });
   }
 };
+
+// @desc    Sort notes
+// @route   GET /api/notes/sort
+// @access  Public
+exports.sortNotes = async (req, res) => {
+  try {
+    const { sortBy = 'createdAt', order = 'desc' } = req.query;
+    const allowedSortFields = ['title', 'createdAt', 'updatedAt', 'category'];
+
+    if (!allowedSortFields.includes(sortBy)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid sortBy. Allowed: title, createdAt, updatedAt, category',
+        data: null
+      });
+    }
+
+    const sortOrder = order === 'asc' ? 1 : -1;
+    const notes = await Note.find().sort({ [sortBy]: sortOrder });
+
+    res.status(200).json({
+      success: true,
+      message: `Notes sorted by ${sortBy} in ${order === 'asc' ? 'ascending' : 'descending'} order`,
+      count: notes.length,
+      data: notes
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      data: null
+    });
+  }
+};
