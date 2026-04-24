@@ -128,3 +128,52 @@ exports.getNoteById = async (req, res) => {
     });
   }
 };
+
+// @desc    Full replace a note
+// @route   PUT /api/notes/:id
+// @access  Public
+exports.replaceNote = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, content, category, isPinned } = req.body;
+
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid note ID',
+        data: null
+      });
+    }
+
+    // PUT should replace the whole document. 
+    // Mongoose findByIdAndUpdate with { overwrite: true } can be used, 
+    // but usually in Express we just update all fields.
+    // If a field is missing in req.body, it should be set to its default or undefined.
+    
+    const note = await Note.findByIdAndUpdate(
+      id,
+      { title, content, category, isPinned },
+      { new: true, runValidators: true, overwrite: true }
+    );
+
+    if (!note) {
+      return res.status(404).json({
+        success: false,
+        message: 'Note not found',
+        data: null
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Note replaced successfully',
+      data: note
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      data: null
+    });
+  }
+};
