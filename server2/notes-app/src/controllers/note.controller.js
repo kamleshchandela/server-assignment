@@ -403,3 +403,36 @@ exports.getNoteSummary = async (req, res) => {
     });
   }
 };
+
+// @desc    Filter notes by category and/or pinned status
+// @route   GET /api/notes/filter
+// @access  Public
+exports.filterNotes = async (req, res) => {
+  try {
+    const { category, isPinned } = req.query;
+    let query = {};
+
+    if (category) {
+      query.category = category;
+    }
+
+    if (isPinned) {
+      query.isPinned = isPinned === 'true';
+    }
+
+    const notes = await Note.find(query);
+
+    res.status(200).json({
+      success: true,
+      message: 'Notes fetched successfully',
+      count: notes.length,
+      data: notes
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      data: null
+    });
+  }
+};
