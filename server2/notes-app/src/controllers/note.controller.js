@@ -641,3 +641,37 @@ exports.sortNotes = async (req, res) => {
     });
   }
 };
+
+// @desc    Sort pinned notes
+// @route   GET /api/notes/sort/pinned
+// @access  Public
+exports.sortPinnedNotes = async (req, res) => {
+  try {
+    const { sortBy = 'createdAt', order = 'desc' } = req.query;
+    const allowedSortFields = ['title', 'createdAt', 'updatedAt', 'category'];
+
+    if (!allowedSortFields.includes(sortBy)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid sortBy. Allowed: title, createdAt, updatedAt, category',
+        data: null
+      });
+    }
+
+    const sortOrder = order === 'asc' ? 1 : -1;
+    const notes = await Note.find({ isPinned: true }).sort({ [sortBy]: sortOrder });
+
+    res.status(200).json({
+      success: true,
+      message: `Pinned notes sorted by ${sortBy} in ${order === 'asc' ? 'ascending' : 'descending'} order`,
+      count: notes.length,
+      data: notes
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      data: null
+    });
+  }
+};
